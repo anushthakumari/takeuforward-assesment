@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import Loader from "../components/Loader";
+
 import BASE_API_URL from "../constants/BASE_API_URL";
 
 const BannerContent = () => {
@@ -7,10 +9,12 @@ const BannerContent = () => {
 	const [timeLeft, setTimeLeft] = useState(10);
 	const [bannerDescription, setBannerDescription] = useState("");
 	const [bannerLink, setBannerLink] = useState("");
+	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchBannerData = async () => {
 			try {
+				setisLoading(true);
 				const response = await fetch(BASE_API_URL + "/banners");
 				const banner = await response.json();
 
@@ -20,6 +24,8 @@ const BannerContent = () => {
 				setBannerLink(banner.link);
 			} catch (error) {
 				console.error("Failed to fetch banner data:", error);
+			} finally {
+				setisLoading(false);
 			}
 		};
 
@@ -63,6 +69,7 @@ const BannerContent = () => {
 					<p>Banner will be disappeared in : {timeLeft} seconds</p>
 				</div>
 			)}
+			<Loader isLoading={isLoading} />
 		</div>
 	);
 };

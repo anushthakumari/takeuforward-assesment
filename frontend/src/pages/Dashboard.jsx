@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import Loader from "../components/Loader";
+
 import BASE_API_URL from "../constants/BASE_API_URL";
 
 const Dashboard = () => {
@@ -7,11 +9,13 @@ const Dashboard = () => {
 	const [bannerTimer, setBannerTimer] = useState(10);
 	const [bannerLink, setBannerLink] = useState("");
 	const [isBannerVisible, setIsBannerVisible] = useState(true);
-	const [errors, setErrors] = useState({}); // For tracking validation errors
+	const [errors, setErrors] = useState({});
+	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchBannerData = async () => {
 			try {
+				setisLoading(true);
 				const response = await fetch(BASE_API_URL + "/banners");
 				if (response.ok) {
 					const data = await response.json();
@@ -26,6 +30,8 @@ const Dashboard = () => {
 				}
 			} catch (error) {
 				console.error("Error fetching banner data:", error);
+			} finally {
+				setisLoading(false);
 			}
 		};
 
@@ -64,6 +70,7 @@ const Dashboard = () => {
 		};
 
 		try {
+			setisLoading(true);
 			const response = await fetch(BASE_API_URL + "/banners", {
 				method: "POST",
 				headers: {
@@ -80,6 +87,8 @@ const Dashboard = () => {
 		} catch (error) {
 			console.error("Error updating banner:", error);
 			alert("An error occurred while updating the banner.");
+		} finally {
+			setisLoading(false);
 		}
 	};
 
@@ -142,6 +151,7 @@ const Dashboard = () => {
 			<button type="submit" className="bg-red-500 text-white py-2 px-4 rounded">
 				Update Banner
 			</button>
+			<Loader isLoading={isLoading} />
 		</form>
 	);
 };
