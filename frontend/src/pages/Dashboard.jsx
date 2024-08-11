@@ -64,7 +64,7 @@ const Dashboard = () => {
 		};
 
 		try {
-			const response = await fetch("http://localhost:3000/api/banners", {
+			const response = await fetch(BASE_API_URL + "/banners", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
