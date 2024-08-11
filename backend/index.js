@@ -52,7 +52,7 @@ const schema = Joi.object({
 // Helper function to check if the table is empty
 const isTableEmpty = () => {
 	return new Promise((resolve, reject) => {
-		const checkSql = "SELECT COUNT(*) AS count FROM banners";
+		const checkSql = "SELECT COUNT(*) AS count FROM " + process.env.DATABASE;
 		db.query(checkSql, (err, result) => {
 			if (err) {
 				return reject("Error checking table: " + err);
@@ -66,7 +66,9 @@ const isTableEmpty = () => {
 const insertBanner = (description, timer, link, isVisible) => {
 	return new Promise((resolve, reject) => {
 		const insertSql =
-			"INSERT INTO banners (description, timer, link, isVisible) VALUES (?, ?, ?, ?)";
+			"INSERT INTO " +
+			process.env.DATABASE +
+			" (description, timer, link, isVisible) VALUES (?, ?, ?, ?)";
 		db.query(
 			insertSql,
 			[description, timer, link, isVisible],
@@ -84,7 +86,9 @@ const insertBanner = (description, timer, link, isVisible) => {
 const updateBanner = (description, timer, link, isVisible) => {
 	return new Promise((resolve, reject) => {
 		const updateSql =
-			"UPDATE banners SET description = ?, timer = ?, link = ?, isVisible = ? LIMIT 1";
+			"UPDATE " +
+			process.env.DATABASE +
+			" SET description = ?, timer = ?, link = ?, isVisible = ? LIMIT 1";
 		db.query(
 			updateSql,
 			[description, timer, link, isVisible],
@@ -127,7 +131,8 @@ app.post("/api/banners", async (req, res) => {
 
 // GET: Retrieve the latest banner
 app.get("/api/banners", (req, res) => {
-	const sql = "SELECT * FROM banners ORDER BY id DESC LIMIT 1";
+	const sql =
+		"SELECT * FROM " + process.env.DATABASE + " ORDER BY id DESC LIMIT 1";
 	db.query(sql, (err, results) => {
 		if (err) {
 			console.error("Error retrieving data:", err);
